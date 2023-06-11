@@ -1,0 +1,15 @@
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Kumbh+Sans:wght@100;200;300;400;500;600;700&display=swap");
+@tailwind base;
+@layer base {
+  body {
+    @apply font-fredoka;
+  }
+}
+@tailwind components;
+
+@layer components {
+  .container {
+    @apply w-[390px] h-[844px] mx-auto;
+  }
+}
+@tailwind utilities;
