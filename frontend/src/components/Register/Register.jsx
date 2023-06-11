@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -21,16 +22,18 @@ const Register = () => {
         setError("The password doesn't match");
         return;
       }
-      if (password.length < 5) {
-        setError("your password is too short");
-        return;
-      }
+      // if (password.length < 5) {
+      //   setError("your password is too short");
+      //   return;
+      // }
       const res = await axios.post("http://localhost:3001/register", {
         username,
         password,
       });
-      const data = res.data;
-      console.log(data);
+      const data = res.data
+      const token = data.token
+      console.log(token)
+      Cookies.set("accessToken", token, { expires: 365 });
       setPopup(true);
     } catch (error) {
       setError(`${error.response.data.message}`);
@@ -78,10 +81,10 @@ const Register = () => {
         <div className="fixed inset-0 bg-[#000000A6] bg-opacity-25 backdrop-blur-none flex justify-center items-center ">
           <div className="container rounded-[20px] w-[272px] h-[387px] bg-[#FFF] flex flex-col justify-center items-center gap-[30px] ">
             <div className="relative">
-              <img src="./Vector.png" alt="" />
+              <img src="./assets/Vector.png" alt="" />
               <img
                 className="absolute top-[10px] left-[20px]"
-                src="./v.png"
+                src="./assets/v.png"
                 alt=""
               />
             </div>
