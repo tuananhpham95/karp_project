@@ -3,7 +3,10 @@ const bcrypt = require("bcrypt");
 const path = require("path");
 const axios = require("axios");
 const Location = require("../models/location");
-
+const { generateAccessToken } = require("../ultis/generateToken")
+const jwt = require("jsonwebtoken")
+const Image = require("../models/images")
+//skapa ett objekt innehåller olika metoder för att hantera användaråtgärder som registrering, inloggning, uppdatering, radering, utloggning och hantering av användarplats och bilder.
 const userController = {
   //REGISTER
   userRegister: async (req, res) => {
@@ -11,7 +14,7 @@ const userController = {
     try {
       //hashing password
       const salt = await bcrypt.genSalt(10);
-      const hashed = await bcrypt.hash(req.body.password, salt);
+      const hashed = await bcrypt.hash(password, salt);
       //check for existing user
       const user = await AccountModel.findOne({ username });
       if (user) {
@@ -20,21 +23,25 @@ const userController = {
           .json({ success: false, message: "Username aldready exists" });
       }
       //create new user
-      const newUser = new AccountModel({ username, password: hashed });
-      //save to database
-      await newUser.save();
-      res.status(200).json({
-        success: true,
-        message: "Your account has been created successfully.",
-      });
+      const newUser =  await AccountModel.create({ username, password: hashed });
+      if (newUser) {
+        const token = generateAccessToken(newUser._id);
+        res.status(200).json({
+          admin:newUser.admin,
+          token: token,
+          _id: newUser._id,
+          success: true,
+          message: "Your account has been created successfully.",
+        })
+      }
+
     } catch (error) {
       console.log(error);
       res.sendStatus(500);
     }
   },
   //LOGIN
-
-  userlogin: async (req, res) => {
+  userLogin: async (req, res) => {
     const { username, password } = req.body;
     try {
       const user = await AccountModel.findOne({ username });
@@ -53,8 +60,9 @@ const userController = {
             .status(400)
             .json({ success: false, message: "Invalid username or password" });
         }
-
+        const token = generateAccessToken(user._id);
         return res.status(200).json({
+          token,
           user,
           success: true,
           message: "Your account has been logged in successfully.",
@@ -67,7 +75,6 @@ const userController = {
         .json({ success: false, message: "Internal server error" });
     }
   },
-
   //UPDATE
 
   userUpdate: async (req, res) => {
@@ -111,6 +118,15 @@ const userController = {
       res.sendStatus(500);
     }
   },
+  //LOGOUT
+
+  userLogout: async (req, res) => {
+    res.cookie("accessToken", "", {
+      httpOnly: true,
+      expires: new Date(0),
+    });
+    res.status(200).json({ message: "User logged out" });
+  },
   //GET USER LOCATION
   userLocation: async (req, res) => {
     try {
@@ -121,6 +137,57 @@ const userController = {
       res.sendStatus(500);
     }
   },
+  // Retrieve all locations from MongoDB
+  getAllLocations: async (req, res) => {
+    try {
+      const locations = await Location.find();
+      return res.json({ locations });
+    } catch (error) {
+      return res.sendStatus(500);
+    }
+  },
+
+  //Upload-file
+  userLoadFile: async (req,res) =>{
+    const {base64,address} = req.body;
+    try {
+      await Image.create({image:base64 , address:address});
+      res.send({Status:"ok"});
+    } catch (error) {
+      res.sendStatus(500);
+    }
+  },
+  //get user
+  getUser: async (req,res) =>{
+    const {_id} = req.body;
+    try {
+      await AccountModel.findOne({_id});
+      res.send({Status:"ok"});
+    } catch (error) {
+      res.sendStatus(500);
+    }
+  },
+  //get all images
+  getAllImages: async (req,res) =>{
+    try {
+
+      const data = await Image.find();
+      return res.json({data});
+    } catch (error) {
+      res.sendStatus(500);
+    }
+  },
+  //get address
+  saveAddressToDatabase: async (req,res) => {
+      const { address } = req.body;
+      try {
+      const newLocation = new Location({ address });
+      await newLocation.save();
+      console.log("Address saved to the database successfully.");
+    } catch (error) {
+      console.error("Error saving address:", error);
+    }
+  }
 };
 
 module.exports = userController;

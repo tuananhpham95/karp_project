@@ -1,12 +1,17 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import NavBar from "../NavBar/NavBar.jsx";
+
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
   const handleLogin = async (e) => {
+
     e.preventDefault();
     try {
       const res = await axios.post("http://localhost:3001/login", {
@@ -14,13 +19,18 @@ const Login = () => {
         password,
       });
       const data = res.data;
-      console.log(data);
-      navigate("/location");
+      setUsername(data.user)
+      const token = data.token
+      // console.log(token)
+      localStorage.setItem("userID", data.user._id)
+      Cookies.set("accessToken", token, { expires: 365 });
+      navigate("/location")
     } catch (error) {
       console.error("Error:", error);
     }
   };
   return (
+
     <div className="container flex items-center flex-col gap-[30px]">
       <div className="login-logo mr-[110px]">
         <p className="Logo mt-[50px] text-primary font-bold text-[32px]">

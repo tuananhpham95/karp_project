@@ -1,4 +1,4 @@
-import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
+import { GoogleMap, useLoadScript, MarkerF } from "@react-google-maps/api";
 import React from "react";
 
 const Map = ({ location }) => {
@@ -9,11 +9,11 @@ const Map = ({ location }) => {
     if (!isLoaded) return <div>Loading...</div>;
     return (
         <GoogleMap
-            zoom={10}
+            zoom={5}
             center={location}
-            mapContainerClassName="w-[400px] h-[400px]"
+            mapContainerClassName="w-[300px] h-[200px]"
         >
-            <Marker position={location} />
+            <MarkerF position={location} />
         </GoogleMap>
     );
 };

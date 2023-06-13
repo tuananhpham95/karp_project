@@ -22,10 +22,10 @@ const Register = () => {
         setError("The password doesn't match");
         return;
       }
-      // if (password.length < 5) {
-      //   setError("your password is too short");
-      //   return;
-      // }
+      if (password.length < 5) {
+        setError("your password is too short");
+        return;
+      }
       const res = await axios.post("http://localhost:3001/register", {
         username,
         password,

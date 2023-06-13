@@ -1,6 +1,5 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const exphbs = require("express-handlebars");
 const mongoose = require("mongoose");
 const authRoute = require("./routes/auth");
 const dotenv = require("dotenv");
@@ -16,8 +15,8 @@ app.use(
 );
 
 app.use(express.static("public"));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ limit:"50mb",extended: true }));
+app.use(bodyParser.json({limit:"50mb"}));
 
 
 app.use("/", authRoute);
