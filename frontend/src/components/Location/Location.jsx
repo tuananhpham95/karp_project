@@ -1,4 +1,4 @@
-import{ useState} from "react";
+import {useState} from "react";
 import axios from "axios";
 import Map from "./Map";
 import NavBar from "../NavBar/NavBar.jsx";
@@ -32,14 +32,7 @@ const Location = () => {
             console.error("Error:", error);
         }
     };
-    // const saveAddressToDatabase = async (address) => {
-    //     try {
-    //         await axios.post("http://localhost:3001/saveAddressToDatabase", { address });
-    //         console.log("Address saved to the database successfully.");
-    //     } catch (error) {
-    //         console.error("Error saving address:", error);
-    //     }
-    // };
+
     function shareLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(saveLocation);
@@ -54,10 +47,10 @@ const Location = () => {
 
         const url = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
         window.open(url);
-        const location = { lat: latitude, lng: longitude };
+        const location = {lat: latitude, lng: longitude};
         setLocation(location);
         getAddressFromCoordinates(latitude, longitude);
-        // saveAddressToDatabase(address)
+
         axios
             .post("http://localhost:3001/location", location, {
                 headers: {
@@ -97,7 +90,7 @@ const Location = () => {
         try {
             const res = await axios.post("http://localhost:3001/upload-file", {
                 base64: image,
-                address:input,
+                address: address,
             });
 
             console.log("data", res.data);
@@ -115,7 +108,7 @@ const Location = () => {
         try {
             const res = await axios.get("http://localhost:3001/getAllImages");
             setAllImages(res.data);
-
+            navigate('/Data')
         } catch (error) {
             console.error("Error:", error);
         }
@@ -127,28 +120,32 @@ const Location = () => {
                 onClick={handleShareOnClick}
                 className="w-[300px] h-8 bg-slate-600 rounded-[15px] text-[#FFF]"
             >
-                Share your location
+                Vill du dela din plats?
             </button>
 
             {showSharePopup &&
-                <div className="fixed inset-0 bg-[#000000A6] bg-opacity-25 backdrop-blur-none flex flex-col justify-center items-center">
-                    <div className="container relative rounded-t-lg h-[720px] bg-[#FFF] flex flex-col justify-center items-center gap-[10px]">
-                        <button onClick={handleClosePopupOnClick} className="absolute top-[16px] right-[16px]">X</button>
+                <div
+                    className="fixed inset-0 bg-[#000000A6] bg-opacity-25 backdrop-blur-none flex flex-col items-center">
+                    <div
+                        className="container relative rounded-t-lg h-[800px] bg-[#FFF] flex flex-col justify-center items-center gap-[25px]">
+                        <button onClick={handleClosePopupOnClick} className="absolute top-[16px] right-[16px]">X
+                        </button>
                         {location === null ?
                             <button
                                 onClick={shareLocation}
                                 className="w-[200px] h-8 bg-slate-600 rounded-[15px] text-[#FFF]"
                             >
-                                Share your location
+                                Dela
                             </button>
                             :
                             <div className="flex flex-col items-center">
-                                {location && <Map location={location} />}
+                                {location && <Map location={location}/>}
                                 <p>Address: {address}</p>
                             </div>
                         }
-                        <div className=" container text-center cursor-pointer w-[200px] h-8 bg-slate-600 rounded-[15px] text-[#FFF]">
-                            <label htmlFor="files">Ladda upp din bild</label>
+                        <div
+                            className=" container text-center cursor-pointer w-[200px] h-8 bg-slate-600 rounded-[15px] text-[#FFF]">
+                            <label htmlFor="files">Ladda upp bild</label>
                             <input id="files" style={{visibility: "hidden"}} type="file" onChange={convertToBase64}/>
                         </div>
 
@@ -156,13 +153,22 @@ const Location = () => {
                             :
                             <>
                                 <img className="container w-[300px] h-[200px]" src={image}/>
-                                <input placeholder="Address" className="container border-2 border-rose-300 rounded-[5px] ml-10 w-[300px] h-[30px]" type="text" size={50} onChange={handleInput}/>
+                                {address !== "" ?
+                                    <input placeholder="Address"
+                                           className="container border-2 border-rose-300 rounded-[5px] ml-10 w-[300px] h-[30px]"
+                                           type="text" value={address} size={50}/> :
+                                    <input placeholder="Address"
+                                           className="container border-2 border-rose-300 rounded-[5px] ml-10 w-[300px] h-[30px]"
+                                           type="text" size={50} onChange={handleInput}/>
+                                }
                             </>
                         }
 
-                        <button className="container w-[100px] h-8 bg-slate-600 rounded-[15px] text-[#FFF]" onClick={handleSubmit}>Submit</button>
+                        <button className="container w-[100px] h-8 bg-slate-600 rounded-[15px] text-[#FFF]"
+                                onClick={handleSubmit}>Skicka in
+                        </button>
                     </div>
-                // </div>
+                    // </div>
             }
             <button
                 onClick={handleAllPicturesOnClick}

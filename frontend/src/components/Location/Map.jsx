@@ -1,8 +1,8 @@
-import { GoogleMap, useLoadScript, MarkerF } from "@react-google-maps/api";
+import {GoogleMap, useLoadScript, MarkerF} from "@react-google-maps/api";
 import React from "react";
 
-const Map = ({ location }) => {
-    const { isLoaded } = useLoadScript({
+const Map = ({location}) => {
+    const {isLoaded} = useLoadScript({
         googleMapsApiKey: "AIzaSyDJpivUV2p5gTQeEKY3kfvXuU9FrZ5ey2k",
     });
 
@@ -13,7 +13,7 @@ const Map = ({ location }) => {
             center={location}
             mapContainerClassName="w-[300px] h-[200px]"
         >
-            <MarkerF position={location} />
+            <MarkerF position={location}/>
         </GoogleMap>
     );
 };

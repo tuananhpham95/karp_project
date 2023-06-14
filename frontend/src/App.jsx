@@ -4,7 +4,7 @@ import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import Home from "./components/Home/Home";
 import Location from "./components/Location/Location";
-import Data from "./components/data/Data.jsx";
+import Data from "./components/Data/Data.jsx";
 
 function App() {
   return (
