@@ -7,7 +7,7 @@ const AccountSchema = new Schema({
     type: String,
     require: true,
     unique: true,
-  } ,
+  },
   password : {
     type: String,
     require: true,
@@ -16,6 +16,7 @@ const AccountSchema = new Schema({
     type: Boolean,
     default:false,
   },
+  score:Number,
 },{
   timestamps: true
 }
